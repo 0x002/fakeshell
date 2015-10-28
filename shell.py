@@ -10,17 +10,17 @@ def run():
     builtin_commands = ['cd', 'exit']
 
     line = raw_input('> ')
-    splitLine = line.split()
+    split_line = line.split()
      
-    if splitLine[0] in builtin_commands:
+    if split_line[0] in builtin_commands:
       # builtins don't need to be forked
       # cd
-      if splitLine[0] == "cd":
-        if len(splitLine) != 1:
-          os.chdir(splitLine[1])
+      if split_line[0] == "cd":
+        if len(split_line) != 1:
+          os.chdir(split_line[1])
       
       # exit
-      elif splitLine[0].startswith("exit"):
+      elif split_line[0].startswith("exit"):
         exit()    
     
     else:
@@ -28,7 +28,7 @@ def run():
 
       # make the command replace the shell process
       if not pid: # child, pid = 0
-        os.execvp(splitLine[0], splitLine)
+        os.execvp(split_line[0], split_line)
       
       else:
         #print str(os.wait()) # see what process it is
