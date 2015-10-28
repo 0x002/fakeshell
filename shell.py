@@ -20,7 +20,7 @@ def run():
                   os.chdir(split_line[1])
 
             # exit
-            elif split_line[0].startswith("exit"):
+            elif split_line[0] == "exit":
                 exit()    
 
         else:
