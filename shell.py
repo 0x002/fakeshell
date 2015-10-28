@@ -12,17 +12,8 @@ def run():
     line = raw_input('> ')
     splitLine = line.split()
      
-    pid = os.fork()
-
-    # make the command replace the shell process
-    if not pid: # child, pid = 0
-      if splitLine[0] not in builtin_commands:
-        os.execvp(splitLine[0], splitLine)
-  
-      os._exit(0)
-    
-    else:
-      # builtins
+    if splitLine[0] in builtin_commands:
+      # builtins don't need to be forked
       # cd
       if splitLine[0] == "cd":
         if len(splitLine) != 1:
@@ -31,8 +22,19 @@ def run():
       # exit
       elif splitLine[0].startswith("exit"):
         exit()    
+    
+    else:
+      pid = os.fork()
+
+      # make the command replace the shell process
+      if not pid: # child, pid = 0
+        os.execvp(splitLine[0], splitLine)
+    
+        os._exit(0)
       
-      print str(os.wait())
+      else:
+        #print str(os.wait()) # see what process it is
+        os.wait()
 
 
 if __name__ == '__main__':
