@@ -29,8 +29,6 @@ def run():
       # make the command replace the shell process
       if not pid: # child, pid = 0
         os.execvp(splitLine[0], splitLine)
-    
-        os._exit(0)
       
       else:
         #print str(os.wait()) # see what process it is
