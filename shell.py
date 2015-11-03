@@ -15,6 +15,8 @@ def run():
         
         if ">" in split_line:
             redirecting_output = True
+            output_file = split_line[-1] # get the output file
+            f = open(output_file, 'w')
 
         if split_line[0] in builtin_commands:
             # builtins don't need to be forked
@@ -32,13 +34,19 @@ def run():
 
             # make the command replace the shell process
             if not pid: # child, pid = 0
+
                 # if ">" in the command, only run part of the 
                 # input command(ignoring last two element in 
                 # arg array, > [filename])            
                 if redirecting_output:
                     split_line_trimmed = split_line[:-2]
-                    os.execvp(split_line_trimmed[0], split_line_trimmed)
+                    
 
+                    # before executing command, redirect output 
+                    # to output file
+                    dup2(f, 1)
+
+                    os.execvp(split_line_trimmed[0], split_line_trimmed)
 
                 else:
                     os.execvp(split_line[0], split_line)
@@ -46,6 +54,8 @@ def run():
             else:
                 #print str(os.wait()) # see what process it is
                 os.wait()
+                if redirecting_output:
+                    f.close()
 
 
 if __name__ == '__main__':
