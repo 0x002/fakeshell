@@ -3,6 +3,7 @@
 # make shell
 
 import os
+import sys
 
 def run():
     while True:
@@ -15,7 +16,7 @@ def run():
         if ">" in split_line:
             redirecting_output = True
             output_file = split_line[-1] # get the output destination
-            f = os.open(output_file, os.O_RDWR|os.O_CREAT)
+
 
         if split_line[0] in builtin_commands:
             # builtins don't need to be forked
@@ -38,11 +39,12 @@ def run():
                 # input command(ignoring last two element in 
                 # arg array, > [filename])            
                 if redirecting_output:
+                    f = os.open(output_file, os.O_RDWR|os.O_CREAT)
                     split_line_trimmed = split_line[:-2]
                     
                     # before executing command, redirect output 
                     # to output file
-                    os.dup2(f, 1)
+                    os.dup2(f, sys.stdout.fileno())
 
                     os.execvp(split_line_trimmed[0], split_line_trimmed)
 
