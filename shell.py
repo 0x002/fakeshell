@@ -29,7 +29,6 @@ def run():
         else:
             pid = os.fork()
 
-
             if not pid: 
 
                 if redirecting_output:
