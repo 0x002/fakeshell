@@ -4,19 +4,18 @@
 
 import os
 
-
 def run():
     while True:
         builtin_commands = ['cd', 'exit']
-        redirecting_output = False
 
         line = raw_input('> ')
         split_line = line.split()
         
+        redirecting_output = False
         if ">" in split_line:
             redirecting_output = True
-            output_file = split_line[-1] # get the output file
-            f = open(output_file, 'w')
+            output_file = split_line[-1] # get the output destination
+            f = os.open(output_file, os.O_RDWR|os.O_CREAT)
 
         if split_line[0] in builtin_commands:
             # builtins don't need to be forked
@@ -41,10 +40,9 @@ def run():
                 if redirecting_output:
                     split_line_trimmed = split_line[:-2]
                     
-
                     # before executing command, redirect output 
                     # to output file
-                    dup2(f, 1)
+                    os.dup2(f, 1)
 
                     os.execvp(split_line_trimmed[0], split_line_trimmed)
 
@@ -55,7 +53,7 @@ def run():
                 #print str(os.wait()) # see what process it is
                 os.wait()
                 if redirecting_output:
-                    f.close()
+                    os.close(f)
 
 
 if __name__ == '__main__':
